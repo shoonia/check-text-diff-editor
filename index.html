@@ -3,10 +3,128 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Compare and edit two text versions side by side." />
     <title>Check Text Diff Editor</title>
+    <link rel="canonical" href="https://shoonia.github.io/check-text-diff-editor/" />
     <link rel="preconnect" href="https://static.parastorage.com" />
     <link rel="dns-prefetch" href="//static.parastorage.com" />
-    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #1e1e1e;
+      }
+
+      #editor {
+        position: fixed;
+        inset: 0 0 36px;
+        width: 100vw;
+        min-height: 200px;
+      }
+
+      .is-loading-editor #editor {
+        visibility: hidden;
+      }
+
+      .editor-loader {
+        position: fixed;
+        inset: 0 0 36px;
+        z-index: 5;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #d4d4d4;
+        background: #1e1e1e;
+        font: 14px/1.2 Arial, sans-serif;
+      }
+
+      .is-loading-editor .editor-loader {
+        display: flex;
+      }
+
+      .loader-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #4a4a4a;
+        border-top-color: #d4d4d4;
+        border-radius: 50%;
+        animation: spin 700ms linear infinite;
+      }
+
+      .footer {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 36px;
+        padding: 0 12px;
+        border-top: 1px solid #2d2d2d;
+        background: #181818;
+      }
+
+      .language-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #d4d4d4;
+        font: 13px/1.2 Arial, sans-serif;
+      }
+
+      #languageSelect {
+        min-width: 180px;
+        height: 24px;
+        border: 1px solid #3c3c3c;
+        border-radius: 3px;
+        background: #252526;
+        color: #f3f3f3;
+        font: inherit;
+      }
+
+      #languageSelect:disabled {
+        color: #858585;
+      }
+
+      .language-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 118px;
+        color: #bdbdbd;
+        font: 12px/1.2 Arial, sans-serif;
+      }
+
+      .language-status[hidden] {
+        display: none;
+      }
+
+      .language-status::before {
+        width: 12px;
+        height: 12px;
+        border: 2px solid #4a4a4a;
+        border-top-color: #d4d4d4;
+        border-radius: 50%;
+        content: "";
+        animation: spin 700ms linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body class="is-loading-editor">
     <div id="editor"></div>
@@ -25,6 +143,129 @@
         </span>
       </label>
     </footer>
-    <script src="./main.js"></script>
+    <script>
+      const demoOriginalText = `
+DEMO - Original text with grammar mistakes
+
+I has a small shop in the city.
+Every morning, I opens the door at nine.
+My customers is usually very kind.
+Yesterday, a woman buyed two books and say thank you.
+I want to make my English more better.
+`;
+
+      const demoCorrectedText = `
+DEMO - Corrected text
+
+I have a small shop in the city.
+Every morning, I open the door at nine.
+My customers are usually very kind.
+Yesterday, a woman bought two books and said thank you.
+I want to make my English better.
+`;
+
+      const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
+      const defaultLanguage = "plaintext";
+
+      const loader = Object.assign(document.createElement("script"), {
+        async: true,
+        src: `${baseUrl}/loader.js`,
+        onload() {
+          require.config({
+            paths: {
+              vs: baseUrl
+            }
+          });
+
+          require(["vs/editor/editor.main"], () => {
+            const originalModel = monaco.editor.createModel(demoOriginalText, defaultLanguage);
+            const modifiedModel = monaco.editor.createModel(demoCorrectedText, defaultLanguage);
+            const diffEditor = monaco.editor.createDiffEditor(document.getElementById("editor"), {
+              theme: "vs-dark",
+              renderWhitespace: "all",
+              fontSize: 16,
+              useShadowDOM: true,
+              readOnly: false,
+              originalEditable: true,
+              automaticLayout: true
+            });
+
+            diffEditor.setModel({
+              original: originalModel,
+              modified: modifiedModel
+            });
+
+            setupLanguageSelect({
+              select: document.getElementById("languageSelect"),
+              status: document.getElementById("languageStatus"),
+              models: [originalModel, modifiedModel]
+            });
+
+            document.body.classList.remove("is-loading-editor");
+            document.getElementById("editorLoader").setAttribute("hidden", "");
+          });
+        }
+      });
+
+      document.head.append(loader);
+
+      function setupLanguageSelect({ select, status, models }) {
+        const languages = monaco.languages
+          .getLanguages()
+          .map((language) => ({
+            id: language.id,
+            label: getLanguageLabel(language)
+          }))
+          .sort((first, second) => {
+            if (first.id === defaultLanguage) {
+              return -1;
+            }
+
+            if (second.id === defaultLanguage) {
+              return 1;
+            }
+
+            return first.label.localeCompare(second.label);
+          });
+
+        const options = document.createDocumentFragment();
+
+        const list = languages.map((language) =>
+          Object.assign(document.createElement("option"), {
+            value: language.id,
+            textContent: language.label
+          }),
+        );
+
+        options.append(...list);
+        select.replaceChildren(options);
+        select.value = defaultLanguage;
+        select.disabled = false;
+
+        select.addEventListener("change", async () => {
+          const langId = select.value;
+
+          setLanguageLoading({ select, status, isLoading: true });
+          try {
+            await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
+          } finally {
+            models.forEach((model) => monaco.editor.setModelLanguage(model, langId));
+            setLanguageLoading({ select, status, isLoading: false });
+            select.focus();
+          }
+        });
+      }
+
+      function setLanguageLoading({ select, status, isLoading }) {
+        select.disabled = isLoading;
+        select.setAttribute("aria-busy", String(isLoading));
+        status.hidden = !isLoading;
+      }
+
+      function getLanguageLabel(language) {
+        const alias = language.aliases?.[0];
+        return alias ? `${alias} (${language.id})` : language.id;
+      }
+    </script>
   </body>
 </html>
