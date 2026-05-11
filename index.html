@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Check Text Diff Editor</title>
+    <link rel="preconnect" href="https://static.parastorage.com" />
+    <link rel="dns-prefetch" href="//static.parastorage.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="is-loading-editor">
+    <div id="editor"></div>
+    <div id="editorLoader" class="editor-loader" aria-live="polite">
+      <span class="loader-spinner"></span>
+      Loading editor...
+    </div>
+    <footer class="footer">
+      <label class="language-control" for="languageSelect">
+        Language
+        <select id="languageSelect" disabled>
+          <option value="plaintext">Plain Text</option>
+        </select>
+        <span id="languageStatus" class="language-status" aria-live="polite" hidden>
+          Loading language...
+        </span>
+      </label>
+    </footer>
+    <script src="./main.js"></script>
+  </body>
+</html>
