@@ -55,26 +55,13 @@ const loader = Object.assign(document.createElement("script"), {
         models: [originalModel, modifiedModel]
       });
 
-      revealEditorWhenReady(diffEditor);
+      document.body.classList.remove("is-loading-editor");
+      document.getElementById("editorLoader").setAttribute("hidden", "");
     });
   }
 });
 
 document.head.append(loader);
-
-async function revealEditorWhenReady(diffEditor) {
-  await nextFrame();
-  await nextFrame();
-  diffEditor.layout();
-  document.body.classList.remove("is-loading-editor");
-  document.getElementById("editorLoader")?.setAttribute("hidden", "");
-}
-
-function nextFrame() {
-  return new Promise((resolve) => {
-    requestAnimationFrame(resolve);
-  });
-}
 
 function setupLanguageSelect({ select, status, models }) {
   const languages = monaco.languages
@@ -114,7 +101,7 @@ function setupLanguageSelect({ select, status, models }) {
 
     setLanguageLoading({ select, status, isLoading: true });
     try {
-      await loadLanguageSupport(langId);
+      await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
     } finally {
       models.forEach((model) => monaco.editor.setModelLanguage(model, langId));
       setLanguageLoading({ select, status, isLoading: false });
@@ -132,8 +119,4 @@ function setLanguageLoading({ select, status, isLoading }) {
 function getLanguageLabel(language) {
   const alias = language.aliases?.[0];
   return alias ? `${alias} (${language.id})` : language.id;
-}
-
-async function loadLanguageSupport(langId) {
-  await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
 }
