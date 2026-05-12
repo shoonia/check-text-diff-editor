@@ -4,8 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Compare and edit two text versions side by side." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shoonia.github.io/check-text-diff-editor/" />
+    <meta property="og:title" content="Check Text Diff Editor" />
+    <meta property="og:description" content="Compare and edit two text versions side by side." />
+    <meta property="og:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
+    <meta property="og:image:secure_url" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Dark split-screen diff editor preview with red and green text changes." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Check Text Diff Editor" />
+    <meta name="twitter:description" content="Compare and edit two text versions side by side." />
+    <meta name="twitter:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
+    <meta name="twitter:image:alt" content="Dark split-screen diff editor preview with red and green text changes." />
     <title>Check Text Diff Editor</title>
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
+    <link rel="icon" type="image/png" href="./images/favicon.png" />
     <link rel="canonical" href="https://shoonia.github.io/check-text-diff-editor/" />
+    <meta name="google-site-verification" content="JkNxAfkbyATcDv733CZNZPVT9UPc4rJNXxd31OgDwvY" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Check Text Diff Editor",
+        "description": "Compare and edit two text versions side by side.",
+        "url": "https://shoonia.github.io/check-text-diff-editor/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "image": "https://shoonia.github.io/check-text-diff-editor/images/og-image.png",
+        "browserRequirements": "Requires JavaScript"
+      }
+    </script>
     <link rel="preconnect" href="https://static.parastorage.com" />
     <link rel="dns-prefetch" href="//static.parastorage.com" />
     <style>
@@ -67,17 +98,37 @@
         left: 0;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
+        gap: 12px;
         height: 36px;
         padding: 0 12px;
         border-top: 1px solid #2d2d2d;
         background: #181818;
       }
 
+      .support-nav {
+        flex: 0 0 auto;
+      }
+
+      .support-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #d4d4d4;
+        font: 13px/1.2 Arial, sans-serif;
+        text-decoration: none;
+      }
+
+      .support-link:hover {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+
       .language-control {
         display: flex;
         align-items: center;
         gap: 8px;
+        min-width: 0;
         color: #d4d4d4;
         font: 13px/1.2 Arial, sans-serif;
       }
@@ -127,12 +178,26 @@
     </style>
   </head>
   <body class="is-loading-editor">
+    <noscript>JavaScript is required to use this diff editor.</noscript>
     <div id="editor"></div>
     <div id="editorLoader" class="editor-loader" aria-live="polite">
       <span class="loader-spinner"></span>
       Loading editor...
     </div>
     <footer class="footer">
+      <nav class="support-nav">
+        <a
+          class="support-link"
+          href="https://u24.gov.ua/"
+          aria-label="Support Ukraine - Visit official fundraising platform"
+        >
+          <svg aria-hidden="true" viewBox="0 0 3 2" width="2em" focusable="false">
+            <path fill="#005bbb" d="M0 0h3v1H0z"></path>
+            <path fill="#ffd500" d="M0 1h3v1H0z"></path>
+          </svg>
+          Support Ukraine
+        </a>
+      </nav>
       <label class="language-control" for="languageSelect">
         Language
         <select id="languageSelect" disabled>
