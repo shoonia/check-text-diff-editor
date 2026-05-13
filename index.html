@@ -1,216 +1,218 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Compare and edit two text versions side by side." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://shoonia.github.io/check-text-diff-editor/" />
-    <meta property="og:title" content="Check Text Diff Editor" />
-    <meta property="og:description" content="Compare and edit two text versions side by side." />
-    <meta property="og:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
-    <meta property="og:image:secure_url" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Dark split-screen diff editor preview with red and green text changes." />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Check Text Diff Editor" />
-    <meta name="twitter:description" content="Compare and edit two text versions side by side." />
-    <meta name="twitter:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png" />
-    <meta name="twitter:image:alt" content="Dark split-screen diff editor preview with red and green text changes." />
-    <title>Check Text Diff Editor</title>
-    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
-    <link rel="icon" type="image/png" href="./images/favicon.png" />
-    <link rel="canonical" href="https://shoonia.github.io/check-text-diff-editor/" />
-    <meta name="google-site-verification" content="JkNxAfkbyATcDv733CZNZPVT9UPc4rJNXxd31OgDwvY" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Check Text Diff Editor",
-        "description": "Compare and edit two text versions side by side.",
-        "url": "https://shoonia.github.io/check-text-diff-editor/",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Any",
-        "image": "https://shoonia.github.io/check-text-diff-editor/images/og-image.png",
-        "browserRequirements": "Requires JavaScript"
-      }
-    </script>
-    <link rel="preconnect" href="https://static.parastorage.com" />
-    <link rel="dns-prefetch" href="//static.parastorage.com" />
-    <style>
-      * {
-        box-sizing: border-box;
-      }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #1e1e1e;
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compare and edit two text versions side by side.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shoonia.github.io/check-text-diff-editor/">
+  <meta property="og:title" content="Check Text Diff Editor">
+  <meta property="og:description" content="Compare and edit two text versions side by side.">
+  <meta property="og:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png">
+  <meta property="og:image:secure_url" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Dark split-screen diff editor preview with red and green text changes.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Check Text Diff Editor">
+  <meta name="twitter:description" content="Compare and edit two text versions side by side.">
+  <meta name="twitter:image" content="https://shoonia.github.io/check-text-diff-editor/images/og-image.png">
+  <meta name="twitter:image:alt" content="Dark split-screen diff editor preview with red and green text changes.">
+  <meta name="google-site-verification" content="JkNxAfkbyATcDv733CZNZPVT9UPc4rJNXxd31OgDwvY">
+  <title>Check Text Diff Editor</title>
+  <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
+  <link rel="icon" type="image/png" href="./images/favicon.png">
+  <link rel="canonical" href="https://shoonia.github.io/check-text-diff-editor/">
+  <link rel="preconnect" href="https://static.parastorage.com">
+  <link rel="dns-prefetch" href="//static.parastorage.com">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Check Text Diff Editor",
+      "description": "Compare and edit two text versions side by side.",
+      "url": "https://shoonia.github.io/check-text-diff-editor/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "image": "https://shoonia.github.io/check-text-diff-editor/images/og-image.png",
+      "browserRequirements": "Requires JavaScript"
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-      #editor {
-        position: fixed;
-        inset: 0 0 36px;
-        width: 100vw;
-        min-height: 200px;
-      }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1e1e1e;
+    }
 
-      .is-loading-editor #editor {
-        visibility: hidden;
-      }
+    textarea {
+      display: none;
+    }
 
-      .editor-loader {
-        position: fixed;
-        inset: 0 0 36px;
-        z-index: 5;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        color: #d4d4d4;
-        background: #1e1e1e;
-        font: 14px/1.2 Arial, sans-serif;
-      }
+    #editor {
+      position: fixed;
+      inset: 0 0 36px;
+      width: 100vw;
+      min-height: 200px;
+    }
 
-      .is-loading-editor .editor-loader {
-        display: flex;
-      }
+    .is-loading-editor #editor {
+      visibility: hidden;
+    }
 
-      .loader-spinner {
-        width: 16px;
-        height: 16px;
-        border: 2px solid #4a4a4a;
-        border-top-color: #d4d4d4;
-        border-radius: 50%;
-        animation: spin 700ms linear infinite;
-      }
+    .editor-loader {
+      position: fixed;
+      inset: 0 0 36px;
+      z-index: 5;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #d4d4d4;
+      background: #1e1e1e;
+      font: 14px/1.2 Arial, sans-serif;
+    }
 
-      .footer {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        height: 36px;
-        padding: 0 12px;
-        border-top: 1px solid #2d2d2d;
-        background: #181818;
-      }
+    .is-loading-editor .editor-loader {
+      display: flex;
+    }
 
-      .support-nav {
-        flex: 0 0 auto;
-      }
+    .loader-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #4a4a4a;
+      border-top-color: #d4d4d4;
+      border-radius: 50%;
+      animation: spin 700ms linear infinite;
+    }
 
-      .support-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: #d4d4d4;
-        font: 13px/1.2 Arial, sans-serif;
-        text-decoration: none;
-      }
+    .footer {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 36px;
+      padding: 0 12px;
+      border-top: 1px solid #2d2d2d;
+      background: #181818;
+    }
 
-      .support-link:hover {
-        color: #ffffff;
-        text-decoration: underline;
-      }
+    .support-nav {
+      flex: 0 0 auto;
+    }
 
-      .language-control {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        min-width: 0;
-        color: #d4d4d4;
-        font: 13px/1.2 Arial, sans-serif;
-      }
+    .support-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #d4d4d4;
+      font: 13px/1.2 Arial, sans-serif;
+      text-decoration: none;
+    }
 
-      #languageSelect {
-        min-width: 180px;
-        height: 24px;
-        border: 1px solid #3c3c3c;
-        border-radius: 3px;
-        background: #252526;
-        color: #f3f3f3;
-        font: inherit;
-      }
+    .support-link:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
 
-      #languageSelect:disabled {
-        color: #858585;
-      }
+    .language-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: #d4d4d4;
+      font: 13px/1.2 Arial, sans-serif;
+    }
 
-      .language-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        min-width: 118px;
-        color: #bdbdbd;
-        font: 12px/1.2 Arial, sans-serif;
-      }
+    #language-select {
+      min-width: 180px;
+      height: 24px;
+      border: 1px solid #3c3c3c;
+      border-radius: 3px;
+      background: #252526;
+      color: #f3f3f3;
+      font: inherit;
+    }
 
-      .language-status[hidden] {
-        display: none;
-      }
+    #language-select:disabled {
+      color: #858585;
+    }
 
-      .language-status::before {
-        width: 12px;
-        height: 12px;
-        border: 2px solid #4a4a4a;
-        border-top-color: #d4d4d4;
-        border-radius: 50%;
-        content: "";
-        animation: spin 700ms linear infinite;
-      }
+    .language-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 118px;
+      color: #bdbdbd;
+      font: 12px/1.2 Arial, sans-serif;
+    }
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
+    .language-status[hidden] {
+      display: none;
+    }
+
+    .language-status::before {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #4a4a4a;
+      border-top-color: #d4d4d4;
+      border-radius: 50%;
+      content: "";
+      animation: spin 700ms linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
-    </style>
-  </head>
-  <body class="is-loading-editor">
-    <noscript>JavaScript is required to use this diff editor.</noscript>
-    <div id="editor"></div>
-    <div id="editorLoader" class="editor-loader" aria-live="polite">
-      <span class="loader-spinner"></span>
-      Loading editor...
-    </div>
-    <footer class="footer">
-      <nav class="support-nav">
-        <a
-          class="support-link"
-          href="https://u24.gov.ua/"
-          aria-label="Support Ukraine - Visit official fundraising platform"
-        >
-          <svg aria-hidden="true" viewBox="0 0 3 2" width="2em" focusable="false">
-            <path fill="#005bbb" d="M0 0h3v1H0z"></path>
-            <path fill="#ffd500" d="M0 1h3v1H0z"></path>
-          </svg>
-          Support Ukraine
-        </a>
-      </nav>
-      <label class="language-control" for="languageSelect">
-        Language
-        <select id="languageSelect" disabled>
-          <option value="plaintext">Plain Text</option>
-        </select>
-        <span id="languageStatus" class="language-status" aria-live="polite" hidden>
-          Loading language...
-        </span>
-      </label>
-    </footer>
-    <script>
-      const demoOriginalText = `
-DEMO - Original text with grammar mistakes
+    }
+  </style>
+</head>
+
+<body class="is-loading-editor">
+  <noscript>JavaScript is required to use this diff editor.</noscript>
+  <div id="editor"></div>
+  <div id="editor-loader" class="editor-loader" aria-live="polite">
+    <span class="loader-spinner"></span>
+    Loading editor...
+  </div>
+  <footer class="footer">
+    <nav class="support-nav">
+      <a class="support-link" href="https://u24.gov.ua/" aria-label="Support Ukraine - Visit official fundraising platform">
+        <svg aria-hidden="true" viewBox="0 0 3 2" width="2em" focusable="false">
+          <path fill="#005bbb" d="M0 0h3v1H0z"></path>
+          <path fill="#ffd500" d="M0 1h3v1H0z"></path>
+        </svg>
+        Support Ukraine
+      </a>
+    </nav>
+    <label class="language-control" for="language-select">
+      Language
+      <select id="language-select">
+        <option value="plaintext">Plain Text (plaintext)</option>
+      </select>
+      <span id="language-status" class="language-status" aria-live="polite" hidden>
+        Loading language...
+      </span>
+    </label>
+  </footer>
+  <script>
+    const originalText = `
+Original text with grammar mistakes
 
 I has a small shop in the city.
 Every morning, I opens the door at nine.
@@ -219,8 +221,8 @@ Yesterday, a woman buyed two books and say thank you.
 I want to make my English more better.
 `;
 
-      const demoCorrectedText = `
-DEMO - Corrected text
+    const correctedText = `
+Corrected text
 
 I have a small shop in the city.
 Every morning, I open the door at nine.
@@ -229,108 +231,97 @@ Yesterday, a woman bought two books and said thank you.
 I want to make my English better.
 `;
 
-      const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
-      const defaultLanguage = "plaintext";
+    const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
+    const defaultLanguage = "plaintext";
 
-      const loader = Object.assign(document.createElement("script"), {
-        async: true,
-        src: `${baseUrl}/loader.js`,
-        onload() {
-          require.config({
-            paths: {
-              vs: baseUrl
-            }
+    const h = (tag, props) => Object.assign(document.createElement(tag), props);
+    const $ = (id) => document.getElementById(id);
+
+    const loader = h("script", {
+      async: true,
+      src: `${baseUrl}/loader.js`,
+      onload() {
+        require.config({
+          paths: {
+            vs: baseUrl
+          }
+        });
+
+        require(["vs/editor/editor.main"], () => {
+          const originalModel = monaco.editor.createModel(originalText, defaultLanguage);
+          const modifiedModel = monaco.editor.createModel(correctedText, defaultLanguage);
+          const diffEditor = monaco.editor.createDiffEditor($("editor"), {
+            theme: "vs-dark",
+            renderWhitespace: "all",
+            fontSize: 16,
+            useShadowDOM: true,
+            readOnly: false,
+            originalEditable: true,
+            automaticLayout: true
           });
 
-          require(["vs/editor/editor.main"], () => {
-            const originalModel = monaco.editor.createModel(demoOriginalText, defaultLanguage);
-            const modifiedModel = monaco.editor.createModel(demoCorrectedText, defaultLanguage);
-            const diffEditor = monaco.editor.createDiffEditor(document.getElementById("editor"), {
-              theme: "vs-dark",
-              renderWhitespace: "all",
-              fontSize: 16,
-              useShadowDOM: true,
-              readOnly: false,
-              originalEditable: true,
-              automaticLayout: true
-            });
-
-            diffEditor.setModel({
-              original: originalModel,
-              modified: modifiedModel
-            });
-
-            setupLanguageSelect({
-              select: document.getElementById("languageSelect"),
-              status: document.getElementById("languageStatus"),
-              models: [originalModel, modifiedModel]
-            });
-
-            document.body.classList.remove("is-loading-editor");
-            document.getElementById("editorLoader").setAttribute("hidden", "");
+          diffEditor.setModel({
+            original: originalModel,
+            modified: modifiedModel
           });
+
+          setupLanguageSelect({
+            select: $("language-select"),
+            status: $("language-status"),
+            models: [originalModel, modifiedModel]
+          });
+
+          document.body.classList.remove("is-loading-editor");
+          $("editor-loader").remove();
+        });
+      }
+    });
+
+    document.head.append(loader);
+
+    function setupLanguageSelect({ select, status, models }) {
+      const fragment = document.createDocumentFragment();
+      const options = monaco.languages
+        .getLanguages()
+        .sort((a, b) => {
+          if (a.id === defaultLanguage) return -1;
+          if (b.id === defaultLanguage) return 1;
+          return a.id.localeCompare(b.id);
+        })
+        .map((language) => h("option", {
+          value: language.id,
+          selected: language.id === defaultLanguage,
+          textContent: getLanguageLabel(language),
+        }));
+
+      fragment.append(...options);
+
+      select.replaceChildren(fragment);
+      select.addEventListener("change", async () => {
+        const langId = select.value;
+
+        setLanguageLoading(true);
+        try {
+          await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
+        } finally {
+          models.forEach((model) => monaco.editor.setModelLanguage(model, langId));
+          setLanguageLoading(false);
+          select.focus();
         }
       });
 
-      document.head.append(loader);
-
-      function setupLanguageSelect({ select, status, models }) {
-        const languages = monaco.languages
-          .getLanguages()
-          .map((language) => ({
-            id: language.id,
-            label: getLanguageLabel(language)
-          }))
-          .sort((first, second) => {
-            if (first.id === defaultLanguage) {
-              return -1;
-            }
-
-            if (second.id === defaultLanguage) {
-              return 1;
-            }
-
-            return first.label.localeCompare(second.label);
-          });
-
-        const options = document.createDocumentFragment();
-
-        const list = languages.map((language) =>
-          Object.assign(document.createElement("option"), {
-            value: language.id,
-            textContent: language.label
-          }),
-        );
-
-        options.append(...list);
-        select.replaceChildren(options);
-        select.value = defaultLanguage;
-        select.disabled = false;
-
-        select.addEventListener("change", async () => {
-          const langId = select.value;
-
-          setLanguageLoading({ select, status, isLoading: true });
-          try {
-            await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
-          } finally {
-            models.forEach((model) => monaco.editor.setModelLanguage(model, langId));
-            setLanguageLoading({ select, status, isLoading: false });
-            select.focus();
-          }
-        });
-      }
-
-      function setLanguageLoading({ select, status, isLoading }) {
+      function setLanguageLoading(isLoading) {
         select.disabled = isLoading;
         select.setAttribute("aria-busy", String(isLoading));
         status.hidden = !isLoading;
       }
+    }
 
-      function getLanguageLabel(language) {
-        const alias = language.aliases?.[0];
-        return alias ? `${alias} (${language.id})` : language.id;
-      }
-    </script>
-  </body>
+    function getLanguageLabel(language) {
+      const alias = language.aliases?.[0];
+      return alias ? `${alias} (${language.id})` : language.id;
+    }
+  </script>
+</body>
+
 </html>
