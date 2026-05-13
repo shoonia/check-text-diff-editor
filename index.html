@@ -211,36 +211,44 @@
     </label>
   </footer>
   <script>
-    const originalText = `
-Original text with grammar mistakes
-
-I has a small shop in the city.
-Every morning, I opens the door at nine.
-My customers is usually very kind.
-Yesterday, a woman buyed two books and say thank you.
-I want to make my English more better.
-`;
-
-    const correctedText = `
-Corrected text
-
-I have a small shop in the city.
-Every morning, I open the door at nine.
-My customers are usually very kind.
-Yesterday, a woman bought two books and said thank you.
-I want to make my English better.
-`;
+    const originalText = "\nOriginal text with grammar mistakes\n\nI has a small shop in the city.\nEvery morning, I opens the door at nine.\nMy customers is usually very kind.\nYesterday, a woman buyed two books and say thank you.\nI want to make my English more better.";
+    const modifiedText = "\nCorrected text\n\nI have a small shop in the city.\nEvery morning, I open the door at nine.\nMy customers are usually very kind.\nYesterday, a woman bought two books and said thank you.\nI want to make my English better.";
 
     const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
     const defaultLanguage = "plaintext";
+    const editorOptions = {
+      theme: "vs-dark",
+      renderWhitespace: "all",
+      fontSize: 16,
+      useShadowDOM: true,
+      readOnly: false,
+      originalEditable: true,
+      automaticLayout: true
+    };
 
     const h = (tag, props) => Object.assign(document.createElement(tag), props);
     const $ = (id) => document.getElementById(id);
+
+    const getLanguageLabel = (language) => {
+      const alias = language.aliases?.[0];
+      return alias ? `${alias} (${language.id})` : language.id;
+    }
+
+    const select = $("language-select");
+    const status = $("language-status");
+
+    const setLanguageLoading = (isLoading) => {
+      select.disabled = isLoading;
+      select.setAttribute("aria-busy", String(isLoading));
+      status.hidden = !isLoading;
+    }
 
     const loader = h("script", {
       async: true,
       src: `${baseUrl}/loader.js`,
       onload() {
+        this.onload = null;
+
         require.config({
           paths: {
             vs: baseUrl
@@ -248,27 +256,43 @@ I want to make my English better.
         });
 
         require(["vs/editor/editor.main"], () => {
-          const originalModel = monaco.editor.createModel(originalText, defaultLanguage);
-          const modifiedModel = monaco.editor.createModel(correctedText, defaultLanguage);
-          const diffEditor = monaco.editor.createDiffEditor($("editor"), {
-            theme: "vs-dark",
-            renderWhitespace: "all",
-            fontSize: 16,
-            useShadowDOM: true,
-            readOnly: false,
-            originalEditable: true,
-            automaticLayout: true
+          const { editor, languages } = monaco;
+          const original = editor.createModel(originalText, defaultLanguage);
+          const modified = editor.createModel(modifiedText, defaultLanguage);
+
+          const fragment = document.createDocumentFragment();
+          const options = languages.getLanguages()
+            .sort((a, b) => {
+              if (a.id === defaultLanguage) return -1;
+              if (b.id === defaultLanguage) return 1;
+              return a.id.localeCompare(b.id);
+            })
+            .map((language) => h("option", {
+              value: language.id,
+              selected: language.id === defaultLanguage,
+              textContent: getLanguageLabel(language),
+            }));
+
+          fragment.append(...options);
+
+          select.replaceChildren(fragment);
+          select.addEventListener("change", async () => {
+            const langId = select.value;
+
+            setLanguageLoading(true);
+            try {
+              await languages.getLanguages().find((i) => i.id === langId)?.loader?.();
+            } finally {
+              editor.setModelLanguage(original, langId);
+              editor.setModelLanguage(modified, langId);
+              setLanguageLoading(false);
+              select.focus();
+            }
           });
 
-          diffEditor.setModel({
-            original: originalModel,
-            modified: modifiedModel
-          });
-
-          setupLanguageSelect({
-            select: $("language-select"),
-            status: $("language-status"),
-            models: [originalModel, modifiedModel]
+          editor.createDiffEditor($("editor"), editorOptions).setModel({
+            original,
+            modified,
           });
 
           document.body.classList.remove("is-loading-editor");
@@ -278,49 +302,6 @@ I want to make my English better.
     });
 
     document.head.append(loader);
-
-    function setupLanguageSelect({ select, status, models }) {
-      const fragment = document.createDocumentFragment();
-      const options = monaco.languages
-        .getLanguages()
-        .sort((a, b) => {
-          if (a.id === defaultLanguage) return -1;
-          if (b.id === defaultLanguage) return 1;
-          return a.id.localeCompare(b.id);
-        })
-        .map((language) => h("option", {
-          value: language.id,
-          selected: language.id === defaultLanguage,
-          textContent: getLanguageLabel(language),
-        }));
-
-      fragment.append(...options);
-
-      select.replaceChildren(fragment);
-      select.addEventListener("change", async () => {
-        const langId = select.value;
-
-        setLanguageLoading(true);
-        try {
-          await monaco.languages.getLanguages().find((i) => i.id === langId)?.loader?.();
-        } finally {
-          models.forEach((model) => monaco.editor.setModelLanguage(model, langId));
-          setLanguageLoading(false);
-          select.focus();
-        }
-      });
-
-      function setLanguageLoading(isLoading) {
-        select.disabled = isLoading;
-        select.setAttribute("aria-busy", String(isLoading));
-        status.hidden = !isLoading;
-      }
-    }
-
-    function getLanguageLabel(language) {
-      const alias = language.aliases?.[0];
-      return alias ? `${alias} (${language.id})` : language.id;
-    }
   </script>
 </body>
 
