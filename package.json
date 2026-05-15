@@ -1,0 +1,9 @@
+{
+  "name": "check-text-diff-editor",
+  "version": "1.0.0",
+  "description": "Compare and edit two text versions side by side.",
+  "scripts": {
+    "serve": "python -m http.server 3000"
+  },
+  "license": "MIT"
+}
