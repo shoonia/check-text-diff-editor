@@ -49,10 +49,12 @@
     body {
       width: 100%;
       height: 100%;
+      height: 100vh;
       margin: 0;
       padding: 0;
       overflow: hidden;
       background: #1e1e1e;
+      font: 14px/1.2 arial, sans-serif;
     }
 
     textarea {
@@ -61,30 +63,24 @@
 
     #editor {
       position: fixed;
-      inset: 0 0 36px;
-      width: 100vw;
-      min-height: 200px;
+      inset: 0;
     }
 
-    .is-loading-editor #editor {
+    .loading-editor {
       visibility: hidden;
     }
 
     .editor-loader {
+      display: flex;
       position: fixed;
       inset: 0 0 36px;
       z-index: 5;
-      display: none;
       align-items: center;
       justify-content: center;
       gap: 10px;
       color: #d4d4d4;
       background: #1e1e1e;
-      font: 14px/1.2 Arial, sans-serif;
-    }
-
-    .is-loading-editor .editor-loader {
-      display: flex;
+      font: 14px/1.2 arial, sans-serif;
     }
 
     .loader-spinner {
@@ -120,7 +116,6 @@
       align-items: center;
       gap: 6px;
       color: #d4d4d4;
-      font: 13px/1.2 Arial, sans-serif;
       text-decoration: none;
     }
 
@@ -135,7 +130,6 @@
       gap: 8px;
       min-width: 0;
       color: #d4d4d4;
-      font: 13px/1.2 Arial, sans-serif;
     }
 
     #language-select {
@@ -145,7 +139,6 @@
       border-radius: 3px;
       background: #252526;
       color: #f3f3f3;
-      font: inherit;
     }
 
     #language-select:disabled {
@@ -158,7 +151,6 @@
       gap: 6px;
       min-width: 118px;
       color: #bdbdbd;
-      font: 12px/1.2 Arial, sans-serif;
     }
 
     .language-status[hidden] {
@@ -183,9 +175,9 @@
   </style>
 </head>
 
-<body class="is-loading-editor">
+<body>
   <noscript>JavaScript is required to use this diff editor.</noscript>
-  <div id="editor"></div>
+  <div id="editor" class="loading-editor"></div>
   <div id="editor-loader" class="editor-loader" aria-live="polite">
     <span class="loader-spinner"></span>
     Loading editor...
@@ -295,7 +287,7 @@
             modified,
           });
 
-          document.body.classList.remove("is-loading-editor");
+          document.body.classList.remove("loading-editor");
           $("editor-loader").remove();
         });
       }
