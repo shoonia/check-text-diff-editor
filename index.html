@@ -149,7 +149,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      min-width: 118px;
       color: #bdbdbd;
     }
 
@@ -193,13 +192,11 @@
       </a>
     </nav>
     <label class="language-control" for="language-select">
+      <span id="language-status" class="language-status" aria-live="polite" hidden aria-labelledby="Loading language"></span>
       Language
       <select id="language-select">
         <option value="plaintext">Plain Text (plaintext)</option>
       </select>
-      <span id="language-status" class="language-status" aria-live="polite" hidden>
-        Loading language...
-      </span>
     </label>
   </footer>
   <script type="module">
@@ -213,8 +210,14 @@
     const $ = (id) => document.getElementById(id);
 
     const getLanguageLabel = (language) => {
+      const id = language.id;
       const alias = language.aliases?.[0];
-      return alias ? `${alias} (${language.id})` : language.id;
+      
+      if (id.startsWith("freemarker2")) {
+        return alias ?? id;
+      }
+
+      return alias ? `${alias} (${id})` : id;
     }
 
     const select = $("language-select");
