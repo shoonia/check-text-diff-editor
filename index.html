@@ -273,16 +273,15 @@
           select.replaceChildren(fragment);
           select.addEventListener("change", async () => {
             const langId = select.value;
-
             setLanguageLoading(true);
             try {
               await languages.getLanguages().find((i) => i.id === langId)?.loader?.();
-              localStorage.setItem(languageKey, langId);
-            } finally {
               editor.setModelLanguage(original, langId);
               editor.setModelLanguage(modified, langId);
-              setLanguageLoading(false);
+              localStorage.setItem(languageKey, langId);
               select.focus();
+            } finally {
+              setLanguageLoading(false);
             }
           });
 
