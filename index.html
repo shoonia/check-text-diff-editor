@@ -205,6 +205,7 @@
 
     const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
     const defaultLanguage = "plaintext";
+    const languageKey = "language";
 
     const h = (tag, props) => Object.assign(document.createElement(tag), props);
     const $ = (id) => document.getElementById(id);
@@ -255,6 +256,7 @@
           });
 
           const fragment = new DocumentFragment();
+          const selectedLanguage = localStorage.getItem(languageKey) ?? defaultLanguage;
           const options = languages.getLanguages()
             .sort((a, b) => {
               if (a.id === defaultLanguage) return -1;
@@ -263,7 +265,7 @@
             })
             .map((language) => h("option", {
               value: language.id,
-              selected: language.id === defaultLanguage,
+              selected: language.id === selectedLanguage,
               textContent: getLanguageLabel(language),
             }));
 
@@ -275,6 +277,7 @@
             setLanguageLoading(true);
             try {
               await languages.getLanguages().find((i) => i.id === langId)?.loader?.();
+              localStorage.setItem(languageKey, langId);
             } finally {
               editor.setModelLanguage(original, langId);
               editor.setModelLanguage(modified, langId);
