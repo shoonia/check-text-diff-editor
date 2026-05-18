@@ -200,12 +200,9 @@
     </label>
   </footer>
   <script type="module">
-    const originalText = "\nOriginal text with grammar mistakes\n\nI has a small shop in the city.\nEvery morning, I opens the door at nine.\nMy customers is usually very kind.\nYesterday, a woman buyed two books and say thank you.\nI want to make my English more better.";
-    const modifiedText = "\nCorrected text\n\nI have a small shop in the city.\nEvery morning, I open the door at nine.\nMy customers are usually very kind.\nYesterday, a woman bought two books and said thank you.\nI want to make my English better.";
-
     const baseUrl = "https://static.parastorage.com/unpkg/monaco-editor@0.55.1/min/vs";
-    const defaultLanguage = "plaintext";
-    const languageKey = "language";
+    const defaultLangId = "plaintext";
+    const langKey = "language";
 
     const h = (tag, props) => Object.assign(document.createElement(tag), props);
     const $ = (id) => document.getElementById(id);
@@ -243,8 +240,9 @@
         });
 
         require(["vs/editor/editor.main"], ({ editor, languages }) => {
-          const original = editor.createModel(originalText, defaultLanguage);
-          const modified = editor.createModel(modifiedText, defaultLanguage);
+          const selectedLangId = localStorage.getItem(langKey) ?? defaultLangId;
+          const original = editor.createModel("\nOriginal text", selectedLangId);
+          const modified = editor.createModel("\nModified text", selectedLangId);
           const diffEditor = editor.createDiffEditor($("editor"), {
             theme: "vs-dark",
             renderWhitespace: "all",
@@ -256,20 +254,22 @@
           });
 
           const fragment = new DocumentFragment();
-          const selectedLanguage = localStorage.getItem(languageKey) ?? defaultLanguage;
           const options = languages.getLanguages()
             .sort((a, b) => {
-              if (a.id === defaultLanguage) return -1;
-              if (b.id === defaultLanguage) return 1;
+              if (a.id === defaultLangId) return -1;
+              if (b.id === defaultLangId) return 1;
               return a.id.localeCompare(b.id);
             })
-            .map((language) => h("option", {
-              value: language.id,
-              selected: language.id === selectedLanguage,
-              textContent: getLanguageLabel(language),
-            }));
+            .forEach((language) =>
+              fragment.append(
+                h("option", {
+                  value: language.id,
+                  textContent: getLanguageLabel(language),
+                  selected: language.id === selectedLangId,
+                })
+              )
+            );
 
-          fragment.append(...options);
           select.replaceChildren(fragment);
           select.addEventListener("change", async () => {
             const langId = select.value;
@@ -278,7 +278,7 @@
               await languages.getLanguages().find((i) => i.id === langId)?.loader?.();
               editor.setModelLanguage(original, langId);
               editor.setModelLanguage(modified, langId);
-              localStorage.setItem(languageKey, langId);
+              localStorage.setItem(langKey, langId);
               select.focus();
             } finally {
               setLanguageLoading(false);
